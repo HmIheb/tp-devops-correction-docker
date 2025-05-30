@@ -49,7 +49,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./database
-          tags: ${{secrets.DOCKERHUB_USERNAME}}/tp-devops-postgres:latest
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/tp-devops-database:latest
           push: ${{ github.ref == 'refs/heads/main' }}
       
       # ...et pour le serveur web
