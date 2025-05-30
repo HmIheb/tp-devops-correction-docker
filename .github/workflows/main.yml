@@ -24,6 +24,9 @@ jobs:
       - name: Build and test with Maven
         run: mvn clean verify --file ./simple-api/pom.xml  # Commande magique pour tester
 
+      - name: SonarCloud analysis
+        run: mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=HmIheb_tp-devops-correction-docker
+
   build-and-push-docker-image:
     needs: test-backend  # Attend que les tests soient OK
     runs-on: ubuntu-24.04
