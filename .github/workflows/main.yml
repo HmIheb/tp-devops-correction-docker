@@ -23,3 +23,40 @@ jobs:
       # Étape 3 : Tester l'application
       - name: Build and test with Maven
         run: mvn clean verify --file ./simple-api/pom.xml  # Commande magique pour tester
+
+  build-and-push-docker-image:
+    needs: test-backend  # Attend que les tests soient OK
+    runs-on: ubuntu-24.04
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      # Connexion à Docker Hub
+      - name: Login to DockerHub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+      
+      # Créer l'image de l'API
+      - name: Build image and push backend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./simple-api  # Où trouver le Dockerfile
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/tp-devops-simple-api:latest
+          push: ${{ github.ref == 'refs/heads/main' }}  # Envoie seulement sur "main"
+      
+      # Même chose pour la base de données...
+      - name: Build image and push database
+        uses: docker/build-push-action@v6
+        with:
+          context: ./postgres
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/tp-devops-postgres:latest
+          push: ${{ github.ref == 'refs/heads/main' }}
+      
+      # ...et pour le serveur web
+      - name: Build image and push httpd
+        uses: docker/build-push-action@v6
+        with:
+          context: ./httpd
+          tags: ${{secrets.DOCKERHUB_USERNAME}}/tp-devops-httpd:latest
+          push: ${{ github.ref == 'refs/heads/main' }}
+  
