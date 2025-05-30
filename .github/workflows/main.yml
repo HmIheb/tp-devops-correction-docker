@@ -25,7 +25,7 @@ jobs:
         run: mvn clean verify --file ./simple-api/pom.xml  # Commande magique pour tester
 
       - name: SonarCloud analysis
-        run: mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=HmIheb_tp-devops-correction-docker -Dsonar.login=${{ secrets.SONAR_TOKEN }} --file ./simple-api/pom.xml
+        run: mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=HmIheb_tp-devops-correction-docker -Dsonar.login=${{ secrets.SONAR_TOKEN }} -Dsonar.host.url=https://sonarcloud.io \ --file ./simple-api/pom.xml
 
   build-and-push-docker-image:
     needs: test-backend  # Attend que les tests soient OK
